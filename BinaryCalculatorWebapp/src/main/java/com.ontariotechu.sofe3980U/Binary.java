@@ -29,7 +29,7 @@ public class Binary
 		}
 		//beg has the index of the first non zero digit in the number
 		this.number=number.substring(beg); // exclude the trailing zeros if any
-		// uncomment the following code
+	
 		
 		if(this.number=="") { // replace empty strings with a single zero
 			this.number="0";
@@ -79,4 +79,40 @@ public class Binary
 		return result;
 		
 	}
+
+	// OR method
+    public static Binary or(Binary num1, Binary num2) {
+        int maxLen = Math.max(num1.number.length(), num2.number.length());
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < maxLen; i++) {
+            char bit1 = (i < num1.number.length()) ? num1.number.charAt(num1.number.length() - 1 - i) : '0';
+            char bit2 = (i < num2.number.length()) ? num2.number.charAt(num2.number.length() - 1 - i) : '0';
+            result.insert(0, (bit1 == '1' || bit2 == '1') ? '1' : '0');
+        }
+        return new Binary(result.toString());
+    }
+
+    // AND method
+    public static Binary and(Binary num1, Binary num2) {
+        int maxLen = Math.max(num1.number.length(), num2.number.length());
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < maxLen; i++) {
+            char bit1 = (i < num1.number.length()) ? num1.number.charAt(num1.number.length() - 1 - i) : '0';
+            char bit2 = (i < num2.number.length()) ? num2.number.charAt(num2.number.length() - 1 - i) : '0';
+            result.insert(0, (bit1 == '1' && bit2 == '1') ? '1' : '0');
+        }
+        return new Binary(result.toString());
+    }
+
+    // Multiply method
+    public static Binary multiply(Binary num1, Binary num2) {
+        Binary result = new Binary("0");
+        for (int i = num2.number.length() - 1; i >= 0; i--) {
+            if (num2.number.charAt(i) == '1') {
+                String shifted = num1.number + "0".repeat(num2.number.length() - 1 - i);
+                result = add(result, new Binary(shifted));
+            }
+        }
+        return result;
+    }
 }	

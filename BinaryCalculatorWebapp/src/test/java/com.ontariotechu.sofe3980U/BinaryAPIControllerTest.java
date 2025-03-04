@@ -1,29 +1,15 @@
 package com.ontariotechu.sofe3980U;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.test.web.servlet.MockMvc;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
 import org.junit.runner.RunWith;
-
-import org.junit.*;
-import org.junit.runner.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.test.context.*;
-import org.springframework.boot.test.mock.mockito.*;
-import org.springframework.test.context.junit4.*;
-
-import static org.hamcrest.Matchers.containsString;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(BinaryAPIController.class)
@@ -32,7 +18,6 @@ public class BinaryAPIControllerTest {
     @Autowired
     private MockMvc mvc;
 
-   
     @Test
     public void add() throws Exception {
         this.mvc.perform(get("/add").param("operand1","111").param("operand2","1010"))//.andDo(print())
@@ -47,5 +32,95 @@ public class BinaryAPIControllerTest {
 			.andExpect(MockMvcResultMatchers.jsonPath("$.operand2").value(1010))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.result").value(10001))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.operator").value("add"));
+    }
+
+    // ----------------- MULTIPLICATION (*) Tests -----------------
+
+    @Test
+    public void multiplyWithZero() throws Exception {
+        this.mvc.perform(get("/multiply").param("operand1", "1010").param("operand2", "0"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    public void multiplyWithOne() throws Exception {
+        this.mvc.perform(get("/multiply").param("operand1", "1010").param("operand2", "1"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("1010"));
+    }
+
+    @Test
+    public void multiplyFirstSmallerThanSecond() throws Exception {
+        this.mvc.perform(get("/multiply").param("operand1", "101").param("operand2", "1010"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("110010"));
+    }
+
+    @Test
+    public void multiplySecondSmallerThanFirst() throws Exception {
+        this.mvc.perform(get("/multiply").param("operand1", "1010").param("operand2", "101"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("110010"));
+    }
+
+    // ----------------- OR (|) Tests -----------------
+
+    @Test
+    public void orWithZero() throws Exception {
+        this.mvc.perform(get("/or").param("operand1", "1010").param("operand2", "0"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("1010"));
+    }
+
+    @Test
+    public void orWithOne() throws Exception {
+        this.mvc.perform(get("/or").param("operand1", "1010").param("operand2", "1"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("1011"));
+    }
+
+    @Test
+    public void orFirstSmallerThanSecond() throws Exception {
+        this.mvc.perform(get("/or").param("operand1", "101").param("operand2", "1010"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("1111"));
+    }
+
+    @Test
+    public void orSecondSmallerThanFirst() throws Exception {
+        this.mvc.perform(get("/or").param("operand1", "1010").param("operand2", "101"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("1111"));
+    }
+
+    // ----------------- AND (&) Tests -----------------
+
+    @Test
+    public void andWithZero() throws Exception {
+        this.mvc.perform(get("/and").param("operand1", "1010").param("operand2", "0"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    public void andWithOne() throws Exception {
+        this.mvc.perform(get("/and").param("operand1", "1010").param("operand2", "1"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    public void andFirstSmallerThanSecond() throws Exception {
+        this.mvc.perform(get("/and").param("operand1", "101").param("operand2", "1010"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    public void andSecondSmallerThanFirst() throws Exception {
+        this.mvc.perform(get("/and").param("operand1", "1010").param("operand2", "101"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
     }
 }
