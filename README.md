@@ -2,7 +2,7 @@
 
 This project demonstrates the deployment of the Binary Calculator WebApp using Docker and Kubernetes on Google Kubernetes Engine (GKE). The web application allows users to perform binary arithmetic operations and is hosted on a cloud-based Kubernetes cluster.
 
-**Deployment Steps**
+#### **Deployment Steps**
 
 **1. Set Up Google Kubernetes Engine (GKE)**
 
